@@ -3,7 +3,7 @@ import { Server } from 'socket.io';
 import { resolve } from 'path'
 import preprocess from 'svelte-preprocess';
 // import { kek } from './src/ws-server/index'
-import { test } from 'src/ws-server/kek'
+// import { test } from './src/ws-server/kek.js'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -31,10 +31,13 @@ const config = {
 				{
 					name: 'sveltekit-socket-io',
 					configureServer: (server) => {
-						const io = new Server(server.httpServer)
+						import('./dist/wss.js').then(({ setup }) => {
+							const io = new Server(server.httpServer)
+							setup(io)
+						})
 						// setup(io)
 						// kek()
-						test()
+						// test()
 					}
 				}
 			]
