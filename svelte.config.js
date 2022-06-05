@@ -1,6 +1,9 @@
 import adapter from '@sveltejs/adapter-node';
 import { Server } from 'socket.io';
+import { resolve } from 'path'
 import preprocess from 'svelte-preprocess';
+// import { kek } from './src/ws-server/index'
+import { test } from 'src/ws-server/kek'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -12,16 +15,26 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		vite: {
+			resolve: {
+				alias: {
+					$components: resolve('src/components'),
+					$i18n: resolve('src/i18n'),
+					$models: resolve('src/models'),
+					'$secrets/client': resolve('src/secrets.client'),
+					'$secrets/server': resolve('src/secrets.server'),
+					$utils: resolve('src/utils'),
+					$state: resolve('src/state'),
+					$wss: resolve('src/ws-server')
+				}
+			},
 			plugins: [
 				{
 					name: 'sveltekit-socket-io',
 					configureServer: (server) => {
 						const io = new Server(server.httpServer)
-						console.log('socket server started')
-
-						io.on('connection', (socket) => {
-							socket.emit('name', 'hello from the server')
-						})
+						// setup(io)
+						// kek()
+						test()
 					}
 				}
 			]

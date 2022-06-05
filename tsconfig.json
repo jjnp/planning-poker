@@ -12,6 +12,22 @@
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strict": true,
-		"target": "es2020"
-	}
+		"target": "es2020",
+		"paths": {
+			"$components/*": ["src/components/*"],
+			"$i18n": ["src/i18n/index.ts"],
+			"$i18n/*": ["src/i18n/*"],
+			"$models/*": ["src/models/*"],
+			"$secrets/client": ["src/secrets.client"],
+			"$secrets/server": ["src/secrets.server"],
+			"$state/*": ["src/state/*"],
+			"$utils/*": ["src/utils/*"],
+			// SvelteKit throws a warning if those are not present
+			"$lib": ["src/lib"],
+			"$lib/*": ["src/lib/*"],
+			"$wss": ["src/ws-server/index.ts"],
+			"$wss/*": ["src/ws-server/*"]
+		}
+	},
+	"include": ["src/**/*.d.ts", "src/**/*.js", "src/**/*.ts", "src/**/*.svelte"]
 }
