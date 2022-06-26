@@ -2,8 +2,18 @@ import adapter from '@sveltejs/adapter-node';
 import { Server } from 'socket.io';
 import { resolve } from 'path'
 import preprocess from 'svelte-preprocess';
-// import { kek } from './src/ws-server/index'
-// import { test } from './src/ws-server/kek.js'
+import fs from 'fs'
+
+function touch(path) {
+	const time = new Date()
+  
+	try {
+	  fs.utimesSync(path, time, time)
+	}
+	catch (err) {
+	  fs.closeSync(fs.openSync(path, 'w'))
+	}
+  }
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -15,6 +25,11 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		vite: {
+			server: {
+				watch: {
+
+				}
+			},
 			resolve: {
 				alias: {
 					$components: resolve('src/components'),
@@ -28,13 +43,38 @@ const config = {
 				}
 			},
 			plugins: [
+				// {
+				// 	name: 'something',
+				// 	configureServer: (server) => {
+				// 		server.watcher.add(['dist/*'])
+				// 		server.watcher.on('change', (file) => {
+				// 			console.log(`got change: ${file}`)
+				// 			if (file.includes('dist')) {
+				// 				console.log('sending change')
+				// 				let io = new Server(server.httpServer)
+
+				// 				import('./dist/wss.js').then(({ setup }) => {
+				// 					// io.close()
+				// 					io = new Server(server.httpServer)
+				// 					setup(io)
+				// 				}).then(() => {
+				// 					server.ws.send({ type: 'full-reload' })
+				// 				})
+				// 				// touch('svelte.config.js')
+				// 			}
+				// 		})
+				// 	}
+				// },
 				{
 					name: 'sveltekit-socket-io',
-					configureServer: (server) => {
-						import('./dist/wss.js').then(({ setup }) => {
-							const io = new Server(server.httpServer)
-							setup(io)
-						})
+					 configureServer: async (server) => {
+						const { setup } = await server.ssrLoadModule('./dist/wss.js')
+						const io = new Server(server.httpServer)
+						setup(io)
+						// import('./dist/wss.js').then(({ setup }) => {
+						// 	const io = new Server(server.httpServer)
+						// 	setup(io)
+						// })
 						// setup(io)
 						// kek()
 						// test()

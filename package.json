@@ -2,9 +2,9 @@
   "name": "planning-poker",
   "version": "0.0.1",
   "scripts": {
-    "dev": "npm run build:wss && concurrently --kill-others npm:dev:*",
+    "dev": "concurrently npm:dev:*",
     "dev:svelte": "svelte-kit dev",
-    "dev:wss": "npm run build:wss --watch",
+    "dev:wss": "npm-watch build:wss",
     "build": "npm run build:wss && npm run build:svelte",
     "build:svelte": "svelte-kit build",
     "build:wss": "esbuild src/ws-server/index.ts --bundle --tsconfig=tsconfig.esbuild.json --outfile=dist/wss.js --platform=node --format=esm",
@@ -16,6 +16,16 @@
     "lint": "prettier --ignore-path .gitignore --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
     "format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. ."
   },
+  "watch": {
+    "build:wss": {
+      "patterns": [
+        "src/ws-server/*"
+      ],
+      "inherit": true,
+      "extensions": "ts",
+      "quiet": true
+    }
+  },
   "devDependencies": {
     "@sveltejs/adapter-auto": "next",
     "@sveltejs/kit": "next",
@@ -25,13 +35,15 @@
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-svelte3": "^3.2.1",
+    "npm-watch": "^0.11.0",
     "prettier": "^2.5.1",
     "prettier-plugin-svelte": "^2.5.0",
     "svelte": "^3.44.0",
     "svelte-check": "^2.2.6",
     "svelte-preprocess": "^4.10.1",
     "tslib": "^2.3.1",
-    "typescript": "~4.6.2"
+    "typescript": "~4.6.2",
+    "vite-plugin-restart": "^0.1.1"
   },
   "type": "module",
   "dependencies": {
