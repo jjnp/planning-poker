@@ -43,43 +43,47 @@ const config = {
 				}
 			},
 			plugins: [
-				// {
-				// 	name: 'something',
-				// 	configureServer: (server) => {
-				// 		server.watcher.add(['dist/*'])
-				// 		server.watcher.on('change', (file) => {
-				// 			console.log(`got change: ${file}`)
-				// 			if (file.includes('dist')) {
-				// 				console.log('sending change')
-				// 				let io = new Server(server.httpServer)
-
-				// 				import('./dist/wss.js').then(({ setup }) => {
-				// 					// io.close()
-				// 					io = new Server(server.httpServer)
-				// 					setup(io)
-				// 				}).then(() => {
-				// 					server.ws.send({ type: 'full-reload' })
-				// 				})
-				// 				// touch('svelte.config.js')
-				// 			}
-				// 		})
-				// 	}
-				// },
 				{
-					name: 'sveltekit-socket-io',
-					 configureServer: async (server) => {
-						const { setup } = await server.ssrLoadModule('./dist/wss.js')
-						const io = new Server(server.httpServer)
-						setup(io)
-						// import('./dist/wss.js').then(({ setup }) => {
-						// 	const io = new Server(server.httpServer)
-						// 	setup(io)
-						// })
-						// setup(io)
-						// kek()
-						// test()
+					name: 'something',
+					configureServer: async (server) => {
+						server.watcher.add(['dist/*'])
+						server.watcher.on('change', (file) => {
+							console.log(`got change: ${file}`)
+							if (file.includes('dist')) {
+								console.log('sending change')
+								let io = new Server(server.httpServer)
+								server.ssrLoadModule('./dist/wss.js').then(({ setup }) => {
+
+									setup(io)
+									server.ws.send({ type: 'full-reload' })
+								})
+
+								// import('./dist/wss.js').then(({ setup }) => {
+								// 	// io.close()
+								// 	io = new Server(server.httpServer)
+								// 	setup(io)
+								// }).then(() => {
+								// 	server.ws.send({ type: 'full-reload' })
+								// })
+								// touch('svelte.config.js')
+							}
+						})
 					}
-				}
+				},
+				// {
+				// 	name: 'sveltekit-socket-io',
+				// 	 configureServer: async (server) => {
+				// 		const { setup } = await server.ssrLoadModule('./dist/wss.js')
+				// 		const io = new Server(server.httpServer)
+				// 		setup(io)
+				// 		// import('./dist/wss.js').then(({ setup }) => {
+				// 		// 	const io = new Server(server.httpServer)
+				// 		// 	setup(io)
+				// 		// })
+				// 		// kek()
+				// 		// test()
+				// 	}
+				// }
 			]
 		}
 	}
