@@ -20,16 +20,15 @@ const config = {
 	
 	// Consult https://github.com/sveltejs/svelte-preprocess
 	// for more information about preprocessors
-	preprocess: preprocess(),
+	preprocess: preprocess({
+		scss: {
+			prependData: `@import 'src/styles/_mixins.scss';`
+		},
+		postcss: true
+	}),
 
 	kit: {
-		adapter: adapter(),
 		vite: {
-			server: {
-				watch: {
-
-				}
-			},
 			resolve: {
 				alias: {
 					$components: resolve('src/components'),
@@ -39,10 +38,14 @@ const config = {
 					'$secrets/server': resolve('src/secrets.server'),
 					$utils: resolve('src/utils'),
 					$state: resolve('src/state'),
-					$wss: resolve('src/ws-server')
+					$wss: resolve('src/ws-server'),
+					
+				$assets: resolve('static'),
+				$styles: resolve('src/styles')
 				}
 			},
-			plugins: [
+		adapter: adapter(),
+		plugins: [
 				{
 					name: 'something',
 					configureServer: async (server) => {
@@ -69,21 +72,7 @@ const config = {
 							}
 						})
 					}
-				},
-				// {
-				// 	name: 'sveltekit-socket-io',
-				// 	 configureServer: async (server) => {
-				// 		const { setup } = await server.ssrLoadModule('./dist/wss.js')
-				// 		const io = new Server(server.httpServer)
-				// 		setup(io)
-				// 		// import('./dist/wss.js').then(({ setup }) => {
-				// 		// 	const io = new Server(server.httpServer)
-				// 		// 	setup(io)
-				// 		// })
-				// 		// kek()
-				// 		// test()
-				// 	}
-				// }
+				}
 			]
 		}
 	}

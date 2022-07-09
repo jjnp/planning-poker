@@ -1,4 +1,4 @@
-import type { User } from "./user"
+import type { User, UserId } from "./user"
 
 export type VotingRange = Fibonacci | ShirtSize
 
@@ -16,12 +16,30 @@ export type ShirtSize = {
 
 export type VotingResult = {
     range: VotingRange
-    result: Record<string, any>
+    result: Record<UserId, VotingRange['options']>
 }
 
+declare const roundId: unique symbol
+
+export type RoundId = string & { readonly [roundId]: never }
+
 export type VotingRound = {
-    id: string
+    id: RoundId
     users: User[]
-    title?: string
-    result?: VotingResult
+    title: string
+    result: VotingResult
 }
+
+export type ActiveRound = VotingRound & {
+    type: 'active'
+}
+
+export type FinishedRound = VotingRound & {
+    type: 'finished'
+}
+
+export type PastRound = VotingRound & {
+    type: 'past'
+}
+
+export type RoundState = ActiveRound | FinishedRound | PastRound
